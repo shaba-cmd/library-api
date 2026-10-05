@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const corsMiddleware = require('./middlewares/cors');
 const routes = require("./routes");
 
 dotenv.config();
@@ -14,15 +15,14 @@ const {
 const app = express();
 
 app.use(express.json());
+app.use(corsMiddleware);
 
 app.use("/", routes);
 
-// несуществующий роут
 app.use((req, res) => {
   res.status(404).send({ message: "Такого маршрута не существует" });
 });
 
-// последний рубеж: ошибки, не пойманные в контроллерах
 app.use((err, req, res, next) => {
   console.error(err);
 
